@@ -29,7 +29,7 @@ public class Main {
             String val = j.getString(key);
             featureSet.put(key,val);
         }
-        
+
         DecisionTree dtree = null;
         for(String s : Files.readAllLines(Paths.get("/tmp/","testTree"), Charset.defaultCharset())) {
             dtree = createDecisionTree(s);
@@ -39,7 +39,7 @@ public class Main {
 
     public static DecisionTree<String, Map<String, String>> createDecisionTree(String value) {
 
-        List<Noode<String, Map<String, String>>> nodeList = new ArrayList<>();
+        List<Node<String, Map<String, String>>> nodeList = new ArrayList<>();
 
         try {
             JSONObject a = new JSONObject(value);
@@ -47,7 +47,7 @@ public class Main {
 
                 JSONObject nodeInfo = a.getJSONObject(String.valueOf(i));
 
-                Noode<String, Map<String, String>> node = null;
+                Node<String, Map<String, String>> node = null;
 
                 JSONObject def_json = new JSONObject();
                 def_json.put("bin_selection","0.0");
@@ -57,7 +57,7 @@ public class Main {
 
                     if("Categorical".equals(nodeInfo.getString("nodeType"))) {
 
-                        node = new Noode<>(
+                        node = new Node<>(
                                 nodeInfo.has("variableName") ? nodeInfo.getString("variableName") : null,
                                 null,
                                 "DO_NOTHING",
@@ -68,7 +68,7 @@ public class Main {
 
                     }
                     if("Regression".equals(nodeInfo.getString("nodeType"))) {
-                        node = new Noode<>(
+                        node = new Node<>(
                                 nodeInfo.has("variableName") ? nodeInfo.getString("variableName") : null,
                                 null,
                                 "DO_NOTHING",
@@ -78,7 +78,7 @@ public class Main {
                                 false);
                     }
                 } else {
-                    node = new Noode<>(
+                    node = new Node<>(
                             nodeInfo.has("variableName") ? nodeInfo.getString("variableName") : null,
                             nodeInfo.has("ext") ? nodeInfo.getJSONObject("ext") : def_json,
                             nodeInfo.has("valueType") ? nodeInfo.getString("valueType") : "DO_NOTHING",
@@ -93,7 +93,7 @@ public class Main {
         } catch (JSONException e) {
         }
 
-        return new DecisionTree<>(nodeList.toArray(nodeList.toArray(new Noode[nodeList.size()])));
+        return new DecisionTree<>(nodeList.toArray(nodeList.toArray(new Node[nodeList.size()])));
 
 
     }
